@@ -1,6 +1,7 @@
 <template>
   <app-bar></app-bar>
-  <v-navigation-drawer expand-on-hover rail class="pt-4" color="grey lighten-3">
+  <v-navigation-drawer expand-on-hover rail width="300" class="pt-4" color="grey lighten-3">
+    <app-bar-search></app-bar-search>
     <v-list nav density="compact">
       <v-list-item v-for="(item, i) in navItems" :key="i" :value="item">
         <template v-slot:prepend>
