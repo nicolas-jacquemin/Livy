@@ -14,11 +14,12 @@
   ></v-autocomplete>
 </template>
 
-<script>
+<script lang="js">
 export default {
   data () {
     return {
-      items: [],
+        loading: false,
+        items: [],
         search: null,
         select: null,
         content: ['coucou', 'salut', 'caca', 'coco']
