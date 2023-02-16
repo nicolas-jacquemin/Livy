@@ -2,8 +2,9 @@
   <v-app>
     <v-layout>
       <app-nav></app-nav>
-      <v-main></v-main>
+      <v-main class="mt-5 ml-1">
+        <NuxtPage />
+      </v-main>
     </v-layout>
-    <NuxtPage />
   </v-app>
 </template>

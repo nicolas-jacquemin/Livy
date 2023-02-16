@@ -5,8 +5,7 @@
     rail
     width="300"
     class="pt-4 pr-2"
-    color="grey lighten-3"
-  >
+    color="grey">
     <app-bar-search></app-bar-search>
     <v-list class="navList" nav density="compact" mandatory v-model="navPage">
       <v-list-item v-for="(item, i) in navItems" :key="i" :value="item">
@@ -62,7 +61,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 div.navSpacer {
   position: absolute;
   bottom: 0;
