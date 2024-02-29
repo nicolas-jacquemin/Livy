@@ -1,131 +1,144 @@
 <script setup lang="ts">
 import type { Ref } from "vue";
+import { useLogin } from "@/composables/api/auth/login.api";
 
-let email: Ref<string> = ref("");
-let emailRef: Ref<HTMLInputElement | undefined> = ref();
-let emailRules = computed((v: string) => {
-    console.log(v)
-    return [
-        !!v || "Email is required"
-    ]
-})
-let password: Ref<string> = ref("");
-let passwordRules = computed((v: string) => {
-    return [
-        !!v || "Email is required"
-    ]
-})
+definePageMeta({
+  layout: "centered-card",
+});
+
+const { t } = useI18n();
+const loginApi = useLogin();
+const router = useRouter();
+
+const fields = reactive({
+  email: {
+    value: "",
+    rules: [
+      (): string | boolean =>
+        !!fields.email.value || t("views.auth.login.fieldsRules.emailRequired"),
+    ],
+  },
+  password: {
+    value: "",
+    rules: [
+      (): string | boolean =>
+        !!fields.password.value ||
+        t("views.auth.login.fieldsRules.passwordRequired"),
+    ],
+  },
+});
+
+const emailComponent = ref<HTMLInputElement | undefined>();
 let showPassword: Ref<boolean> = ref(false);
 let valid: Ref<boolean> = ref(false);
 let loader: Ref<boolean> = ref(false);
 let error: Ref<boolean> = ref(false);
-let errorMessage: Ref<string> = ref("");
+let errorMessageKey: Ref<string> = ref("");
 
 async function login() {
-    if (valid.value) {
-        loader.value = true;
-        fetch('/api/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: email.value,
-                password: password.value
-            })
-        }).then(res => {
-            if (res.status == 200) {
-                res.json().then(data => {
-                    console.log(`user=${data.token}; expires=${new Date(data.expires).toUTCString()}; path=/;`);
-                    document.cookie = `user=${data.token}; expires=${new Date(data.expires).toUTCString()}; path=/;`;
-                })
-            }
-            else {
-                loader.value = false;
-                error.value = true;
-                password.value = "";
-                if (res.status == 401) {
-                    errorMessage.value = 'Invalid email or password';
-                }
-                else if (res.status == 429) {
-                    errorMessage.value = 'Too many login attempts... Please try again later';
-                }
-                else {
-                    errorMessage.value = 'An error occurred';
-                }
-            }
-        })
+  if (!valid.value) return;
+  const email = fields.email;
+  const password = fields.password;
+  loader.value = true;
+  try {
+    const user = await loginApi(email.value, password.value);
+    document.cookie = `user=${user.token}; expires=${new Date(
+      user.expires
+    ).toUTCString()}; path=/;`;
+    router.push("/");
+  } catch (e: any) {
+    loader.value = false;
+    error.value = true;
+    password.value = "";
+    if (e.status == 401) {
+      errorMessageKey.value =
+        "views.auth.login.messages.invalidEmailOrPassword";
+    } else if (e.status == 429) {
+      errorMessageKey.value = "views.auth.login.messages.tooManyRequests";
+    } else {
+      errorMessageKey.value = "glossary.messages.anErrorOccurred";
     }
+  }
 }
 
 onMounted(() => {
-    if (emailRef.value)
-        emailRef.value.focus();
+  if (document.cookie.includes("user=")) router.push("/");
+  if (emailComponent.value) emailComponent.value.focus();
 });
 </script>
 
 <template>
-    <div>
-        {{ valid }}
-        <div class="container">
-            <div class="loginCard">
-                <v-form class="form" v-model="valid" @submit.prevent="login">
-                    <v-text-field class="input" type="email" v-model="email" label="Email" required ref="emailRef"
-                        :rules="emailRules"></v-text-field>
-                    <v-text-field class="input" v-model="password" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                        :type="showPassword ? 'text' : 'password'" label="Password" required
-                        @click:append="showPassword = !showPassword"
-                        :rules="passwordRules"></v-text-field>
-                    <div class="actions">
-                        <nuxt-link to="/auth/register"><v-btn text>Register</v-btn></nuxt-link>
-                        <v-btn color="primary" type="submit">Login</v-btn>
-                    </div>
-                </v-form>
-            </div>
-            <IndeterminateLoader v-model="loader"></IndeterminateLoader>
-
-            <v-dialog v-model="error" persistent max-width="290">
-                <v-card>
-                    <v-card-title class="text-h5">
-                        Error
-                    </v-card-title>
-                    <v-card-text>{{ errorMessage }}</v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="primary" text @click="error = false">
-                            Close
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
-        </div>
+  <div>
+    <div class="card-title">
+      <LogoPrimary class="logo" />
+      <VCardTitle class="m-plus fw-900 text-center">{{
+        $t("views.auth.login.title")
+      }}</VCardTitle>
     </div>
+    <VForm class="form px-15 pt-15" v-model="valid" @submit.prevent="login">
+      <VTextField
+        ref="emailComponent"
+        :label="$t(`views.auth.login.fields.email`)"
+        v-model="fields.email.value"
+        :rules="fields.email.rules"
+        type="email"
+        required
+      ></VTextField>
+      <VTextField
+        :label="$t(`views.auth.login.fields.password`)"
+        v-model="fields.password.value"
+        :rules="fields.password.rules"
+        :type="showPassword ? 'text' : 'password'"
+        required
+        :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+        @click:append="showPassword = !showPassword"
+      ></VTextField>
+      <div class="actions pt-10 pb-5">
+        <NuxtLink to="/auth/register"
+          ><VBtn color="secondary" variant="text">{{
+            $t("views.auth.login.actions.register")
+          }}</VBtn></NuxtLink
+        >
+        <VBtn color="primary" type="submit">{{
+          $t("views.auth.login.actions.submit")
+        }}</VBtn>
+      </div>
+    </VForm>
+  
+    <IndeterminateLoader :info="t('views.auth.login.messages.loading')" v-model="loader"></IndeterminateLoader>
+  
+    <VDialog v-model="error" persistent max-width="290">
+      <v-card>
+        <VCardTitle class="text-h5">
+          {{ $t("glossary.messages.error") }}
+        </VCardTitle>
+        <VCardText>{{ $t(errorMessageKey) }}</VCardText>
+        <VCardActions>
+          <VSpacer></VSpacer>
+          <VBtn color="primary" variant="text" @click="error = false">
+            {{ $t("glossary.actions.close") }}
+          </VBtn>
+        </VCardActions>
+      </v-card>
+    </VDialog>
+  </div>
 </template>
 
 <style scoped lang="scss">
-.container {
-    display: flex;
-    height: 100vh;
-    width: 100vw;
-    align-items: center;
-    justify-content: center;
-}
+.card-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-.loginCard {
-    height: 300px;
-    width: 100%;
-    max-width: 700px;
-
-    .form {
-        height: 200px;
-    }
+  .logo {
+    height: 48px;
+    width: 48px;
+  }
 }
 
 .actions {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    padding: 0px 20px;
-    margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
 }
 </style>

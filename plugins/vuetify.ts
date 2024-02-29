@@ -10,7 +10,7 @@ const darkTheme: ThemeDefinition = {
     primary: '#b5434f',
     grey: '#4f4e4e',
     'primary-darken-1': '#3700B3',
-    secondary: '#03DAC6',
+    secondary: '#fff',
     'secondary-darken-1': '#018786',
     error: '#B00020',
     info: '#2196F3',

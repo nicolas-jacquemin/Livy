@@ -4,7 +4,6 @@ import { createResolver } from '@nuxt/kit'
 const { resolve } = createResolver(import.meta.url)
 
 export default defineNuxtConfig({
-
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: { name: 'layout', mode: 'out-in' },
@@ -20,13 +19,16 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
   },
-
   css: [
     'vuetify/lib/styles/main.sass',
     '@mdi/font/css/materialdesignicons.min.css',
   ],
   modules: [
+    '@nuxtjs/i18n'
   ],
+  i18n: {
+    vueI18n: './i18n.config.ts',
+  },
   build: {
     transpile: ['vuetify'],
   },
@@ -38,6 +40,12 @@ export default defineNuxtConfig({
         })
       )
     },
+  },
+
+  runtimeConfig: {
+    public: {
+      apiUrl: ''
+    }
   },
 
   vite: {

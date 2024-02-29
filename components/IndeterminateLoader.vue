@@ -1,6 +1,7 @@
 <script setup lang="ts">
 let props = defineProps<{
     modelValue: boolean
+    info?: string
 }>();
 
 let emits = defineEmits(["update:modelValue"]);
@@ -16,11 +17,15 @@ let loading = computed({
 </script>
 
 <template>
-    <v-dialog v-model="loading" persistent max-width="290">
-        <v-card class="d-flex" style="height: 220px;">
-            <v-card-text class="text-center my-auto">
-                <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
-            </v-card-text>
-        </v-card>
-    </v-dialog>
+    <VDialog v-model="loading" persistent max-width="300">
+        <VCard>
+            <VCardText class="text-center my-auto">
+                <div v-if="info" class="loader-bar py-2 px-5">
+                    <div class="loader-info text-center py-13">{{ info }}</div>
+                    <VProgressLinear indeterminate color="primary" size="64"></VProgressLinear>
+                </div>
+                <VProgressCircular v-else class="py-15" indeterminate color="primary" size="64"></VProgressCircular>
+            </VCardText>
+        </VCard>
+    </VDialog>
 </template>
