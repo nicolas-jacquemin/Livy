@@ -1,15 +1,11 @@
 import { ofetch } from "ofetch";
-
-export type LoginResponse = {
-  token: string;
-  expires: string;
-};
+import type { ApiAuthToken } from "@/types/api/ApiAuthToken";
 
 export const useLogin =
   () =>
-  async (email: string, password: string): Promise<LoginResponse> => {
+  async (email: string, password: string): Promise<ApiAuthToken> => {
     const config = useRuntimeConfig();
-    return await ofetch<LoginResponse>(`${config.public.apiUrl}/auth/login`, {
+    return await ofetch<ApiAuthToken>(`${config.public.apiUrl}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

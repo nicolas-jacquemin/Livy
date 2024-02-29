@@ -8,6 +8,7 @@ definePageMeta({
 
 const { t } = useI18n();
 const loginApi = useLogin();
+const saveTokenToCookies = useSaveTokenToCookies();
 const router = useRouter();
 
 const fields = reactive({
@@ -42,9 +43,7 @@ async function login() {
   loader.value = true;
   try {
     const user = await loginApi(email.value, password.value);
-    document.cookie = `user=${user.token}; expires=${new Date(
-      user.expires
-    ).toUTCString()}; path=/;`;
+    saveTokenToCookies(user.token, user.expires);
     router.push("/");
   } catch (e: any) {
     loader.value = false;
@@ -62,7 +61,7 @@ async function login() {
 }
 
 onMounted(() => {
-  if (document.cookie.includes("user=")) router.push("/");
+  if (document.cookie.includes("userToken=")) router.push("/");
   if (emailComponent.value) emailComponent.value.focus();
 });
 </script>
