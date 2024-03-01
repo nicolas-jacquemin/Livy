@@ -5,6 +5,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   if (to.path.includes("/auth")) return;
 
+  const deleteToken = useDeleteToken();
+
   const token = document.cookie
     .split("; ")
     .find((row) => row.startsWith("userToken"))
@@ -15,9 +17,9 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     ?.split("=")[1];
 
   if (!token || !expires || new Date(expires) < new Date()) {
+    deleteToken();
     return navigateTo("/auth/login");
   }
-  console.log("auth.global.ts");
 
   const renewToken = useRenewToken();
   const saveTokenToCookies = useSaveTokenToCookies();
@@ -26,7 +28,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const user = await renewToken(token);
     saveTokenToCookies(user.token, user.expires);
   } catch (e) {
-    document.cookie = `token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+    deleteToken();
     return navigateTo("/auth/login");
   }
 });
