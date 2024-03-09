@@ -24,7 +24,8 @@ export default defineNuxtConfig({
     '@mdi/font/css/materialdesignicons.min.css',
   ],
   modules: [
-    '@nuxtjs/i18n'
+    '@nuxtjs/i18n',
+    '@pinia/nuxt',
   ],
   i18n: {
     vueI18n: './i18n.config.ts',
@@ -52,7 +53,7 @@ export default defineNuxtConfig({
     server: {
       proxy: {
         "/api": {
-          target: "http://localhost:3000",
+          target: "http://localhost:8080",
           changeOrigin: true,
           secure: false,
         },

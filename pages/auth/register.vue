@@ -8,7 +8,6 @@ definePageMeta({
 
 const { t } = useI18n();
 const registerApi = useRegister();
-const saveTokenToCookies = useSaveTokenToCookies();
 const router = useRouter();
 
 const fields = reactive({
@@ -72,7 +71,6 @@ async function register() {
   loader.value = true;
   try {
     const user = await registerApi(name.value, email.value, password.value, inviteCode.value);
-    saveTokenToCookies(user.token, user.expires);
     router.push("/");
   } catch (e: any) {
     loader.value = false;
@@ -97,7 +95,6 @@ async function register() {
 }
 
 onMounted(() => {
-  if (document.cookie.includes("userToken=")) router.push("/");
   if (nameComponent.value) nameComponent.value.focus();
 });
 </script>
