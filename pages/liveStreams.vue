@@ -79,7 +79,7 @@ const onScroll = async () => {
   const bottomOfWindow =
     document.documentElement.scrollTop + window.innerHeight >=
     document.documentElement.offsetHeight - 400;
-  if (bottomOfWindow && liveStreams.value?.pages > page.value) {
+  if (bottomOfWindow && (liveStreams.value?.pages && liveStreams.value?.pages > page.value)) {
     page.value++;
     loading.value = true;
     const newLiveStreams = await useLiveStreams().index(
