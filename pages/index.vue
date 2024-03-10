@@ -58,14 +58,17 @@ const fetchSessions = async () => {
 await useAsyncData("user", () => me.fetchUser());
 
 onMounted(() => {
+  if (interval)
+    clearInterval(interval);
   interval = setInterval(() => {
     fetchSessions();
   }, 5000);
   fetchSessions();
 });
 
-onUnmounted(() => {
-  clearInterval(interval);
+onBeforeUnmount(() => {
+  if (interval)
+    clearInterval(interval);
 });
 </script>
 
