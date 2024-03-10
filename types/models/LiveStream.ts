@@ -4,6 +4,7 @@ export interface LiveStream {
   name: string;
   stream_id: number;
   stream_icon: string;
+  liked: boolean;
   category: {
     _id: string;
     category_id: string;

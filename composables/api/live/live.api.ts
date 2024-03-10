@@ -1,5 +1,6 @@
 import { ofetch } from "ofetch";
 import type { Paginate } from "~/types/Paginate";
+import type { PlayResponse } from "~/types/api/PlayResponse";
 import type { LiveStream } from "~/types/models/LiveStream";
 
 export const useLiveStreams = () => ({
@@ -14,4 +15,42 @@ export const useLiveStreams = () => ({
       }
     });
   },
+
+  show: async (id: string) => {
+    const config = useRuntimeConfig();
+    return await ofetch<LiveStream>(`${config.public.apiUrl}/live/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+  },
+
+  play: async (id: string) => {
+    const config = useRuntimeConfig();
+    return await ofetch<PlayResponse>(`${config.public.apiUrl}/live/${id}/play`, {
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+  },
+
+  like: async (id: string) => {
+    const config = useRuntimeConfig();
+    return await ofetch<LiveStream>(`${config.public.apiUrl}/me/livestreams/like/${id}`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+  },
+
+  unlike: async (id: string) => {
+    const config = useRuntimeConfig();
+    return await ofetch<LiveStream>(`${config.public.apiUrl}/me/livestreams/like/${id}`, {
+      method: 'DELETE',
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+  }
 });

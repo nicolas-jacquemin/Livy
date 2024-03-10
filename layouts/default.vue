@@ -2,7 +2,7 @@
   <VContainer fluid>
     <VAppBar>
       <VAppBarNavIcon @click="drawer = !drawer" />
-      <VAppBarTitle>Home</VAppBarTitle>
+      <VAppBarTitle>Livy</VAppBarTitle>
       <VSpacer />
       <VBtn @click="logout()" variant="text">Logout</VBtn>
     </VAppBar>

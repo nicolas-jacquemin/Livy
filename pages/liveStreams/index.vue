@@ -22,7 +22,7 @@
         :key="liveStream._id"
         class="mx-2"
       >
-        <CardLiveStream :liveStream="liveStream" />
+        <CardLiveStream class="pointer" :liveStream="liveStream" v-ripple :to="`/liveStreams/${liveStream._id}`" />
       </VCol>
     </VRow>
     <h4 v-if="liveStreams?.data?.length === 0" class="text-center">
@@ -103,3 +103,9 @@ onUnmounted(() => {
   window.removeEventListener("scroll", onScroll);
 });
 </script>
+
+<style scoped lang="scss">
+.pointer {
+  cursor: pointer;
+}
+</style>

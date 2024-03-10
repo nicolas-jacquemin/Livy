@@ -4,7 +4,7 @@
     <VCol>
       <VRow align="center" justify="center">
         <VCol>
-          <VImg v-if="liveStream.stream_icon" :src="liveStream.stream_icon" />
+          <VImg v-if="liveStream.stream_icon" :src="`/api/live/${liveStream._id}/stream_icon`" />
         </VCol>
         </VRow>
         <VRow align="center" justify="center">
