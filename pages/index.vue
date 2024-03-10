@@ -1,9 +1,9 @@
 <template>
   <div>
-    <VContainer fluid>
-      <VCard class="pa-5" v-if="sessions.length > 0">
-        <h2>Playings</h2>
-        <VRow class="mt-7">
+    <VContainer fluid class="mt-5">
+      <h2>Welcome back {{ me.user?.name }} !</h2>
+      <VCard class="mt-5 pa-5" v-if="sessions.length > 0">
+        <VRow>
           <VCol
             v-for="session in sessions"
             :key="session.liveStream._id"
@@ -13,22 +13,28 @@
           </VCol>
         </VRow>
       </VCard>
-      <h2 class="mt-10">Liked LiveStreams</h2>
-      <VRow class="mt-7">
-        <VCol
-          v-for="liveStream in me.user?.likedLiveStreams"
-          :key="liveStream._id"
-          class="mx-4"
-          cols="auto"
-        >
-          <CardLiveStream
-            class="pointer"
-            :liveStream="liveStream"
-            v-ripple
-            :to="`/liveStreams/${liveStream._id}`"
-          />
-        </VCol>
-      </VRow>
+      <div class="liked" v-if="me.user?.likedLiveStreams.length">
+        <h2 class="mt-10">Favorite livestream</h2>
+        <VRow class="mt-7">
+          <VCol
+            v-for="liveStream in me.user?.likedLiveStreams"
+            :key="liveStream._id"
+            class="mx-4"
+            cols="auto"
+          >
+            <CardLiveStream
+              class="pointer"
+              :liveStream="liveStream"
+              v-ripple
+              :to="`/liveStreams/${liveStream._id}`"
+            />
+          </VCol>
+        </VRow>
+      </div>
+      <div class="search">
+        <h2 class="mt-10">Livestreams</h2>
+        <CardLiveStreamSearcher />
+      </div>
     </VContainer>
   </div>
 </template>

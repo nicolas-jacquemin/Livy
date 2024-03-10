@@ -45,11 +45,12 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiUrl: ''
+      apiUrl: '',
+      apiFullUrl: '',
     }
   },
 
-  vite: {
+  vite: { // For Development only (not for production)
     server: {
       proxy: {
         "/api": {

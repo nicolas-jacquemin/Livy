@@ -1,41 +1,43 @@
 <template>
   <div>
-    <VRow>
-      <VCol cols="12" lg="7" class="px-10">
-        <VideoPlayer
-          v-if="playSession"
-          :src="`/api/play/manifest/${playSession.id}/index.m3u8`"
-          poster="`/api/live/${liveStream._id}/stream_icon`"
-          controls
-          :loop="true"
-          :volume="0.6"
-          class="v-col-12"
-          aspect-ratio="16:9"
-          autoplay
-        />
-        <VCard v-else-if="playError" class="v-col-12 not-available">
-          <VCardTitle class="text-center"
-            >Not available : {{ playError }}</VCardTitle
-          >
-          <VBtn @click="play" color="primary">Retry</VBtn>
-        </VCard>
-        <VSkeletonLoader v-else class="v-col-12 asp16-9" />
-
-        <VCard v-if="liveStream" class="mt-5 pa-3">
-          <VRow>
-            <VCol cols="auto">
-              <VCardTitle>{{ liveStream.name }}</VCardTitle>
-            </VCol>
-            <VCol>
-              <VBtn icon @click="toggleLike">
-                <VIcon v-if="liveStream.liked">mdi-heart</VIcon>
-                <VIcon v-else>mdi-heart-outline</VIcon>
-              </VBtn>
-            </VCol>
-          </VRow>
-        </VCard>
-      </VCol>
-    </VRow>
+    <VContainer fluid>
+      <VRow>
+        <VCol cols="12" lg="7" class="px-10">
+          <VideoPlayer
+            v-if="playSession"
+            :src="`/api/play/manifest/${playSession.id}/index.m3u8`"
+            poster="`/api/live/${liveStream._id}/stream_icon`"
+            controls
+            :loop="true"
+            :volume="0.6"
+            class="v-col-12"
+            aspect-ratio="16:9"
+            autoplay
+          />
+          <VCard v-else-if="playError" class="v-col-12 not-available">
+            <VCardTitle class="text-center"
+              >Not available : {{ playError }}</VCardTitle
+            >
+            <VBtn @click="play" color="primary">Retry</VBtn>
+          </VCard>
+          <VSkeletonLoader v-else class="v-col-12 asp16-9" />
+    
+          <VCard v-if="liveStream" class="mt-5 pa-3">
+            <VRow>
+              <VCol cols="auto">
+                <VCardTitle>{{ liveStream.name }}</VCardTitle>
+              </VCol>
+              <VCol>
+                <VBtn icon @click="toggleLike">
+                  <VIcon v-if="liveStream.liked">mdi-heart</VIcon>
+                  <VIcon v-else>mdi-heart-outline</VIcon>
+                </VBtn>
+              </VCol>
+            </VRow>
+          </VCard>
+        </VCol>
+      </VRow>
+    </VContainer>
   </div>
 </template>
 
@@ -86,7 +88,7 @@ const toggleLike = async () => {
     }
     liveStream.value.liked = !liveStream.value.liked;
   }
-}
+};
 
 watchEffect(() => {
   if (liveStream.value) {

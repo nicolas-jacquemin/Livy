@@ -1,12 +1,10 @@
 <template>
   <VApp>
-    <VLayout>
-      <VMain class="mt-5 ml-1">
-        <NuxtLayout>
-          <NuxtPage />
-        </NuxtLayout>
+    <NuxtLayout>
+      <VMain>
+        <NuxtPage />
       </VMain>
-    </VLayout>
+    </NuxtLayout>
   </VApp>
 </template>
 

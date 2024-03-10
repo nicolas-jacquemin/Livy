@@ -8,7 +8,7 @@ definePageMeta({
 
 const { t } = useI18n();
 const registerApi = useRegister();
-const router = useRouter();
+const route = useRoute();
 
 const fields = reactive({
   name: {
@@ -71,7 +71,7 @@ async function register() {
   loader.value = true;
   try {
     const user = await registerApi(name.value, email.value, password.value, inviteCode.value);
-    router.push("/");
+    await navigateTo(route.query.redirect as string | undefined ?? "/");
   } catch (e: any) {
     loader.value = false;
     error.value = true;

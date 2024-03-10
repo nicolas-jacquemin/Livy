@@ -1,27 +1,35 @@
 <template>
-  <VContainer fluid>
+  <div>
     <VAppBar>
-      <VAppBarNavIcon @click="drawer = !drawer" />
+      <!-- <VAppBarNavIcon @click="drawer = !drawer" /> -->
+      <VBtn icon to="/">
+        <VIcon>mdi-home</VIcon>
+      </VBtn>
       <VAppBarTitle>Livy</VAppBarTitle>
       <VSpacer />
-      <VBtn @click="logout()" variant="text">Logout</VBtn>
+      <h4>{{ user.user?.name }}</h4>
+      <VBtn class="ml-5" @click="logout()" icon>
+        <VIcon>mdi-logout</VIcon>
+      </VBtn>
     </VAppBar>
-  </VContainer>
-
-  <VNavigationDrawer v-model="drawer" temporary>
-    <VList>
-      <VListItem to="/">Home</VListItem>
-      <VListItem to="/liveStreams">Live Streams</VListItem>
-    </VList>
-  </VNavigationDrawer>
-
-  <slot />
+  
+    <VNavigationDrawer v-model="drawer" temporary>
+      <VList>
+        <VListItem to="/">Home</VListItem>
+        <VListItem to="/liveStreams">Live Streams</VListItem>
+      </VList>
+    </VNavigationDrawer>
+  
+    <slot />
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { useLogout } from '~/composables/api/auth/logout.api';
+import { useLogout } from "~/composables/api/auth/logout.api";
 
 const logoutApi = useLogout();
+
+const user = userStore();
 
 const drawer = ref(false);
 

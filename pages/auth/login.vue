@@ -8,7 +8,7 @@ definePageMeta({
 
 const { t } = useI18n();
 const loginApi = useLogin();
-const router = useRouter();
+const route = useRoute();
 
 const fields = reactive({
   email: {
@@ -41,8 +41,8 @@ async function login() {
   const password = fields.password;
   loader.value = true;
   try {
-    const user = await loginApi(email.value, password.value);
-    router.push("/");
+    await loginApi(email.value, password.value);
+    await navigateTo(route.query.redirect as string | undefined ?? "/");
   } catch (e: any) {
     loader.value = false;
     error.value = true;

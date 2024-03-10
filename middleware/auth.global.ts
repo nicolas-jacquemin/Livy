@@ -1,20 +1,17 @@
-import { useLogout } from "~/composables/api/auth/logout.api";
 import { useRenewToken } from "~/composables/api/auth/renewToken.api";
+import { useSSRRenewToken } from "~/composables/api/auth/renewToken.ssr.api";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
-  if (process.server) return;
+  const renewToken = (process.server) ? useSSRRenewToken() : useRenewToken();
 
-  const logout = useLogout();
-
-  const renewToken = useRenewToken();
-
-  if (to.path.includes("/auth"))
-    return;
+  if (to.path.includes("/auth")) return;
 
   try {
     await renewToken();
   } catch (e: any) {
-    logout();
-    return navigateTo("/auth/login");
+    return await navigateTo({
+      name: "auth-login",
+      query: { redirect: to.fullPath },
+    });
   }
 });
