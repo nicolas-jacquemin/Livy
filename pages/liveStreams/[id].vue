@@ -4,9 +4,9 @@
       <VRow>
         <VCol cols="12" lg="7" class="px-10">
           <VideoPlayer
-            v-if="playSession"
+            v-if="liveStream && playSession"
             :src="`/api/play/manifest/${playSession.id}/index.m3u8`"
-            poster="`/api/live/${liveStream._id}/stream_icon`"
+            :poster="`/api/live/${liveStream._id}/stream_icon`"
             controls
             :loop="true"
             :volume="0.6"
