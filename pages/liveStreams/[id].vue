@@ -2,7 +2,7 @@
   <div>
     <VContainer fluid>
       <VRow>
-        <VCol cols="12" lg="7" class="px-10">
+        <VCol cols="12" lg="7" class="px-md-10">
           <VideoPlayer
             v-if="liveStream && playSession"
             :src="`/api/play/manifest/${playSession.id}/index.m3u8`"
@@ -61,8 +61,6 @@ const { data: liveStream } = useAsyncData(
 const playSession = ref<PlayResponse | null>(null);
 const playError = ref<boolean | string>(false);
 
-let retryInterval: NodeJS.Timeout | null = null;
-
 const play = async () => {
   try {
     playSession.value = await useLiveStreams().play(route.params.id as string);
@@ -70,6 +68,7 @@ const play = async () => {
   } catch (error: any) {
     playError.value = true;
     if (error.status == 403) playError.value = "Maximum viewers reached";
+    setTimeout(retry, 1000);
   }
 };
 
@@ -93,14 +92,11 @@ const toggleLike = async () => {
 watchEffect(() => {
   if (liveStream.value) {
     document.title = `Livy - ${liveStream.value.name}`;
-    if (retryInterval) clearInterval(retryInterval);
     play();
-    retryInterval = setInterval(retry, 1000);
   }
 });
 
 onBeforeUnmount(() => {
-  if (retryInterval) clearInterval(retryInterval);
   if (playSession.value) {
     usePlay().stop(playSession.value);
   }
@@ -110,7 +106,6 @@ onBeforeUnmount(() => {
 <style lang="scss" scoped>
 .not-available {
   aspect-ratio: 16/9;
-  background-color: black;
   display: flex;
   flex-direction: column;
   align-items: center;
