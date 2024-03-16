@@ -8,6 +8,7 @@
             v-for="session in sessions"
             :key="session.liveStream._id"
             class="mx-4"
+            cols="auto"
           >
             <VBtn :to="`/liveStreams/${session.liveStream._id}`"><h4>{{ session.users.map((user) => user.name).join(", ") }} {{ session.users.length > 1 ? 'are' : 'is' }} watching to {{ session.liveStream.name }}</h4></VBtn>
           </VCol>
@@ -15,12 +16,12 @@
       </VCard>
       <div class="liked" v-if="me.user?.likedLiveStreams.length">
         <h2 class="mt-10">Favorite livestream</h2>
-        <VRow class="mt-7">
+        <VRow class="mt-7 ga-2">
           <VCol
             v-for="liveStream in me.user?.likedLiveStreams"
             :key="liveStream._id"
-            class="mx-4"
-            cols="auto"
+            cols="12" sm="4" md="3" lg="2" xl="1"
+            class="px-0"
           >
             <CardLiveStream
               class="pointer"
