@@ -1,7 +1,7 @@
 <template>
-  <div class="pa-1" v-ripple>
+  <VCard elevation="0" class="pa-0 pa-sm-1" :to="`/liveStreams/${liveStream._id}`">
     <VImg class="image" v-if="liveStream.stream_icon" :src="`/api/live/${liveStream._id}/stream_icon`"/>
-    <VRow class="mt-2">
+    <VRow class="ma-0 mt-2">
       <VCol cols="auto">
         <VAvatar size="32" class="mx-auto">
           <VImg :src="`/api/live/${liveStream._id}/stream_icon`" />
@@ -11,7 +11,7 @@
         <h4>{{ liveStream.name }}</h4>
       </VCol>
     </VRow>
-  </div>
+  </VCard>
 </template>
 
 <script lang="ts" setup>

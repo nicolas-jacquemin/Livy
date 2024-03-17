@@ -16,12 +16,12 @@
       </VCard>
       <div class="liked" v-if="me.user?.likedLiveStreams.length">
         <h2 class="mt-10">Favorite livestream</h2>
-        <VRow class="mt-7 ga-2">
+        <VRow class="mt-7">
           <VCol
             v-for="liveStream in me.user?.likedLiveStreams"
             :key="liveStream._id"
-            cols="12" sm="4" md="3" lg="2" xl="1"
-            class="px-0"
+            cols="12" sm="6" md="4" lg="2" xl="1"
+            class="px-0 px-sm-1 flex-grow-1"
           >
             <CardLiveStream
               class="pointer"
