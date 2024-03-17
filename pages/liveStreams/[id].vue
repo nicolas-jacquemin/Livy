@@ -12,6 +12,7 @@
             aspect-ratio="16:9"
             class="v-col-12"
             autoplay
+            @ready="updateMediaSession"
         />
         <VCard v-else-if="playError" class="v-col-12 not-available">
           <VCardTitle class="text-center">
@@ -22,13 +23,18 @@
         <VSkeletonLoader v-else class="v-col-12 asp16-9"/>
 
         <VCard elevation="0" v-if="liveStream" class="mt-5 pa-3">
+          <VRow>
+            <VCol cols="auto">
+              <h3>{{ epgNowTitle }}</h3>
+            </VCol>
+          </VRow>
           <VRow align="center" justify="center" justify-sm="start" class="px-5">
             <VCol cols="auto">
               <VAvatar size="32" class="mx-auto">
                 <VImg :src="`/api/live/${liveStream._id}/stream_icon`"/>
               </VAvatar>
             </VCol>
-            <VCol>
+            <VCol cols="auto">
               <h4>{{ liveStream.name }}</h4>
             </VCol>
             <VCol cols="auto">
@@ -64,6 +70,30 @@ const {data: liveStream} = useAsyncData(
 const playSession = ref<PlayResponse | null>(null);
 const playError = ref<boolean | string>(false);
 
+const epgNowTitle = computed(() => {
+  if (liveStream.value?.epg_now) {
+    return liveStream.value.epg_now.title.find((title) => title._value)?._value;
+  }
+  return liveStream.value?.name;
+});
+
+const updateMediaSession = () => {
+  console.log('updateMediaSession', liveStream.value)
+  if (liveStream.value) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: epgNowTitle.value ?? liveStream.value.name,
+      artist: liveStream.value.name,
+      artwork: [
+        {
+          src: `/api/live/${liveStream.value._id}/stream_icon`,
+          sizes: `800x800`,
+          type: "image/png",
+        },
+      ],
+    });
+  }
+}
+
 const play = async () => {
   try {
     playError.value = false;
@@ -95,7 +125,6 @@ const toggleLike = async () => {
 watch(liveStream, () => {
   if (liveStream.value) {
     document.title = `Livy - ${liveStream.value.name}`;
-    console.log('liveStream.value', liveStream.value);
     play();
   }
 });
