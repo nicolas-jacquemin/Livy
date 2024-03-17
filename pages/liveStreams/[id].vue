@@ -1,61 +1,64 @@
 <template>
-  <div>
-    <VContainer fluid>
-      <VRow>
-        <VCol cols="12" lg="7" class="px-md-10">
-          <VideoPlayer
+  <VContainer fluid class="mt-5">
+    <VRow>
+      <VCol cols="12" md="9" class="px-0 px-md-10">
+        <VideoPlayer
             v-if="liveStream && playSession"
             :src="`/api/play/manifest/${playSession.id}/index.m3u8`"
             :poster="`/api/live/${liveStream._id}/stream_icon`"
             controls
             :loop="true"
             :volume="0.6"
-            class="v-col-12"
             aspect-ratio="16:9"
+            class="v-col-12"
             autoplay
-          />
-          <VCard v-else-if="playError" class="v-col-12 not-available">
-            <VCardTitle class="text-center"
-              >Not available : {{ playError }}</VCardTitle
-            >
-            <VBtn @click="play" color="primary">Retry</VBtn>
-          </VCard>
-          <VSkeletonLoader v-else class="v-col-12 asp16-9" />
-    
-          <VCard v-if="liveStream" class="mt-5 pa-3">
-            <VRow>
-              <VCol cols="auto">
-                <VCardTitle>{{ liveStream.name }}</VCardTitle>
-              </VCol>
-              <VCol>
-                <VBtn icon @click="toggleLike">
-                  <VIcon v-if="liveStream.liked">mdi-heart</VIcon>
-                  <VIcon v-else>mdi-heart-outline</VIcon>
-                </VBtn>
-              </VCol>
-            </VRow>
-          </VCard>
-        </VCol>
-      </VRow>
-    </VContainer>
-  </div>
+        />
+        <VCard v-else-if="playError" class="v-col-12 not-available">
+          <VCardTitle class="text-center">
+            Not available : {{ playError }}
+          </VCardTitle>
+          <p>Playback will start when the stream is available</p>
+        </VCard>
+        <VSkeletonLoader v-else class="v-col-12 asp16-9"/>
+
+        <VCard elevation="0" v-if="liveStream" class="mt-5 pa-3">
+          <VRow align="center" justify="center" justify-sm="start" class="px-5">
+            <VCol cols="auto">
+              <VAvatar size="32" class="mx-auto">
+                <VImg :src="`/api/live/${liveStream._id}/stream_icon`"/>
+              </VAvatar>
+            </VCol>
+            <VCol>
+              <h4>{{ liveStream.name }}</h4>
+            </VCol>
+            <VCol cols="auto">
+              <VBtn icon @click="toggleLike">
+                <VIcon v-if="liveStream.liked">mdi-heart</VIcon>
+                <VIcon v-else>mdi-heart-outline</VIcon>
+              </VBtn>
+            </VCol>
+          </VRow>
+        </VCard>
+      </VCol>
+    </VRow>
+  </VContainer>
 </template>
 
 <script lang="ts" setup>
-import { VideoPlayer } from "@videojs-player/vue";
+import {VideoPlayer} from "@videojs-player/vue";
 import "video.js/dist/video-js.css";
-import { useLiveStreams } from "~/composables/api/live/live.api";
-import { usePlay } from "~/composables/api/play/stop.api";
-import type { PlayResponse } from "~/types/api/PlayResponse";
+import {useLiveStreams} from "~/composables/api/live/live.api";
+import {usePlay} from "~/composables/api/play/stop.api";
+import type {PlayResponse} from "~/types/api/PlayResponse";
 
 const route = useRoute();
 
-const { data: liveStream } = useAsyncData(
-  "liveStream",
-  () => useLiveStreams().show(route.params.id as string),
-  {
-    server: false,
-  }
+const {data: liveStream} = useAsyncData(
+    "liveStream",
+    () => useLiveStreams().show(route.params.id as string),
+    {
+      server: false,
+    }
 );
 
 const playSession = ref<PlayResponse | null>(null);
@@ -63,8 +66,8 @@ const playError = ref<boolean | string>(false);
 
 const play = async () => {
   try {
-    playSession.value = await useLiveStreams().play(route.params.id as string);
     playError.value = false;
+    playSession.value = await useLiveStreams().play(route.params.id as string);
   } catch (error: any) {
     playError.value = true;
     if (error.status == 403) playError.value = "Maximum viewers reached";
@@ -89,9 +92,10 @@ const toggleLike = async () => {
   }
 };
 
-watchEffect(() => {
+watch(liveStream, () => {
   if (liveStream.value) {
     document.title = `Livy - ${liveStream.value.name}`;
+    console.log('liveStream.value', liveStream.value);
     play();
   }
 });
