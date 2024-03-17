@@ -9,7 +9,7 @@
   </VRow>
   <VInfiniteScroll :items="liveStreams?.data" @load="loadMore" class="overflow-hidden">
     <VRow class="mt-7">
-      <VCol v-for="liveStream in liveStreams?.data" :key="liveStream._id" cols="12" sm="6" md="4" lg="2" xl="1"
+      <VCol v-for="liveStream in liveStreams?.data" :key="liveStream._id" cols="12" sm="6" md="4" lg="3" xl="2"
             class="px-0 px-sm-1 flex-grow-1">
         <CardLiveStream class="pointer" :liveStream="liveStream" v-ripple :to="`/liveStreams/${liveStream._id}`"/>
       </VCol>
@@ -62,7 +62,6 @@ const searchLiveStreams = async () => {
 const searchLiveStreamsDebounced = debounce(searchLiveStreams, 300);
 
 const loadMore = async ({done}: { done: (status: string) => void }) => {
-  console.log("loading more");
   if (liveStreams.value?.pages && liveStreams.value?.pages > page.value) {
     page.value++;
     loading.value = true;

@@ -20,7 +20,7 @@
           <VCol
             v-for="liveStream in me.user?.likedLiveStreams"
             :key="liveStream._id"
-            cols="12" sm="6" md="4" lg="2" xl="1"
+            cols="12" sm="6" md="4" lg="3" xl="2"
             class="px-0 px-sm-1 flex-grow-1"
           >
             <CardLiveStream
