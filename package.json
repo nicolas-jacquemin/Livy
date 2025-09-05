@@ -22,6 +22,7 @@
     "@pinia/nuxt": "^0.5.1",
     "@vime/core": "^5.4.1",
     "@vime/vue-next": "^5.4.1",
+    "hls.js": "^1.6.11",
     "ofetch": "^1.3.3",
     "pinia": "^2.1.7",
     "sass": "^1.58.0",

@@ -3,7 +3,7 @@
     <VRow>
       <VCol cols="12" md="9" class="px-0 px-md-10">
         <Player v-if="liveStream && playSession" autoplay class="v-col-12" @vmReady="updateMediaSession">
-          <Hls :poster="liveStream.stream_icon">
+          <Hls :poster="liveStream.stream_icon" :config="hlsConfig">
             <source :src="`/api/play/manifest/${playSession.id}/index.m3u8`" type="application/x-mpegURL" />
           </Hls>
           <DefaultUi />
@@ -49,6 +49,7 @@ import { DefaultUi, Hls, Player } from '@vime/vue-next';
 import { useLiveStreams } from "~/composables/api/live/live.api";
 import { usePlay } from "~/composables/api/play/stop.api";
 import type { PlayResponse } from "~/types/api/PlayResponse";
+import { type HlsConfig } from 'hls.js';
 
 const route = useRoute();
 
@@ -62,6 +63,15 @@ const { data: liveStream } = useAsyncData(
 
 const playSession = ref<PlayResponse | null>(null);
 const playError = ref<boolean | string>(false);
+
+const hlsConfig = ref<Partial<HlsConfig>>({
+
+  liveDurationInfinity: true,
+  maxBufferLength: 60,
+  backBufferLength: 30,
+  liveSyncDuration: 21,
+  liveMaxLatencyDuration: 60,
+});
 
 const epgNowTitle = computed(() => {
   if (liveStream.value?.epg_now) {
