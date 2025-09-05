@@ -22,6 +22,7 @@ export default defineNuxtConfig({
   css: [
     'vuetify/lib/styles/main.sass',
     '@mdi/font/css/materialdesignicons.min.css',
+    "@vime/core/themes/default.css",
   ],
   modules: [
     '@nuxtjs/i18n',
@@ -54,7 +55,7 @@ export default defineNuxtConfig({
     server: {
       proxy: {
         "/api": {
-          target: "http://localhost:8080",
+          target: "https://livy.rigidd.app",
           changeOrigin: true,
           secure: false,
         },

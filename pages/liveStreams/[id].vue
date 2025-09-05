@@ -2,25 +2,19 @@
   <VContainer fluid class="mt-5">
     <VRow>
       <VCol cols="12" md="9" class="px-0 px-md-10">
-        <VideoPlayer
-            v-if="liveStream && playSession"
-            :src="`/api/play/manifest/${playSession.id}/index.m3u8`"
-            :poster="`/api/live/${liveStream._id}/stream_icon`"
-            controls
-            :loop="true"
-            :volume="0.6"
-            aspect-ratio="16:9"
-            class="v-col-12"
-            autoplay
-            @ready="updateMediaSession"
-        />
+        <Player v-if="liveStream && playSession" autoplay class="v-col-12" @vmReady="updateMediaSession">
+          <Hls :poster="liveStream.stream_icon">
+            <source :src="`/api/play/manifest/${playSession.id}/index.m3u8`" type="application/x-mpegURL" />
+          </Hls>
+          <DefaultUi />
+        </Player>
         <VCard v-else-if="playError" class="v-col-12 not-available">
           <VCardTitle class="text-center">
             Not available : {{ playError }}
           </VCardTitle>
           <p>Playback will start when the stream is available</p>
         </VCard>
-        <VSkeletonLoader v-else class="v-col-12 asp16-9"/>
+        <VSkeletonLoader v-else class="v-col-12 asp16-9" />
 
         <VCard elevation="0" v-if="liveStream" class="mt-5 pa-3">
           <VRow>
@@ -31,7 +25,7 @@
           <VRow align="center" justify="center" justify-sm="start" class="px-5">
             <VCol cols="auto">
               <VAvatar size="32" class="mx-auto">
-                <VImg :src="`/api/live/${liveStream._id}/stream_icon`"/>
+                <VImg :src="`/api/live/${liveStream._id}/stream_icon`" />
               </VAvatar>
             </VCol>
             <VCol cols="auto">
@@ -51,20 +45,19 @@
 </template>
 
 <script lang="ts" setup>
-import {VideoPlayer} from "@videojs-player/vue";
-import "video.js/dist/video-js.css";
-import {useLiveStreams} from "~/composables/api/live/live.api";
-import {usePlay} from "~/composables/api/play/stop.api";
-import type {PlayResponse} from "~/types/api/PlayResponse";
+import { DefaultUi, Hls, Player } from '@vime/vue-next';
+import { useLiveStreams } from "~/composables/api/live/live.api";
+import { usePlay } from "~/composables/api/play/stop.api";
+import type { PlayResponse } from "~/types/api/PlayResponse";
 
 const route = useRoute();
 
-const {data: liveStream} = useAsyncData(
-    "liveStream",
-    () => useLiveStreams().show(route.params.id as string),
-    {
-      server: false,
-    }
+const { data: liveStream } = useAsyncData(
+  "liveStream",
+  () => useLiveStreams().show(route.params.id as string),
+  {
+    server: false,
+  }
 );
 
 const playSession = ref<PlayResponse | null>(null);
